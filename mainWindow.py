@@ -1,8 +1,5 @@
 import tkinter as tk
-import time
-import sqlite3
 class mainWindow:
-
 
     #create window
     window = tk.Tk()
@@ -13,7 +10,7 @@ class mainWindow:
     screen_width = window.winfo_screenwidth()
     screen_height = window.winfo_screenheight()
     window.geometry(f"{screen_width}x{screen_height}")
-
+    
     #add labels
     title = tk.Label(window,text="School Alarm System",fg="White",bg="#353b48",font="Times 35 bold").pack()
 
@@ -24,11 +21,9 @@ class mainWindow:
     delete_task = tk.Button(window,text="Delete Task",fg="White",font="Times 15 bold",bg="#273c75",width=20,height=2,cursor="hand2")
     delete_task.place(x=50,y=200)
 
-    exit = tk.Button(window,text="Exit",fg="White",font="Times 15 bold",bg="#273c75",width=20,height=2,cursor="hand2")
+    exit = tk.Button(window,text="Exit",fg="White",font="Times 15 bold",bg="#273c75",width=20,height=2,cursor="hand2", command=window.destroy)
     exit.place(x=50,y=500)
 
-
-
-
+    #add table
 
     window.mainloop()
