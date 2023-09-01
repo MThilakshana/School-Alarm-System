@@ -34,17 +34,18 @@ class mainWindow:
     #define table columns
     my_tree['columns']=("Description","Time","Status")
     #set fonts
-    custom_font = ("Times",15)
+    custom_font = ("Times",20)
     my_tree.tag_configure("custom_font",font=custom_font)
     #set styles
     s = ttk.Style()
     s.theme_use('clam')
-    s.configure('Treeview.Heading',background="green",font="Times 20")
+    s.configure('Treeview.Heading',background="#273c75",font="Times 20")
+    s.configure('Treeview',rowheight=40)
     #format our columns
-    my_tree.column("#0",width=50,minwidth=25)
-    my_tree.column("Description",anchor=W,width=120)
-    my_tree.column("Time",anchor=CENTER,width=100)
-    my_tree.column("Status",anchor=CENTER,width=100)
+    my_tree.column("#0",width=100,minwidth=25)
+    my_tree.column("Description",anchor=W,width=400)
+    my_tree.column("Time",anchor=CENTER,width=200)
+    my_tree.column("Status",anchor=CENTER,width=200)
     #create headdings
     my_tree.heading("#0",text="ID",anchor=CENTER)
     my_tree.heading("Description",text="Description",anchor=CENTER)
