@@ -30,9 +30,16 @@ class mainWindow:
     exit.place(x=50,y=500)
 
     #add table
-    my_tree = ttk.Treeview(root)
+    my_tree = ttk.Treeview(root,height=15)
     #define table columns
     my_tree['columns']=("Description","Time","Status")
+    #set fonts
+    custom_font = ("Times",15)
+    my_tree.tag_configure("custom_font",font=custom_font)
+    #set styles
+    s = ttk.Style()
+    s.theme_use('clam')
+    s.configure('Treeview.Heading',background="green",font="Times 20")
     #format our columns
     my_tree.column("#0",width=50,minwidth=25)
     my_tree.column("Description",anchor=W,width=120)
@@ -44,7 +51,15 @@ class mainWindow:
     my_tree.heading("Time",text="Time",anchor=CENTER)
     my_tree.heading("Status",text="Status",anchor=CENTER)
     #add data
-    my_tree.insert(parent='',index='end',iid=0,text='01',values=('1st Period','7.30','No'))
+    my_tree.insert(parent='',index='end',iid=0,text='01',values=('1st Period','7.30','No'),tags=("custom_font"))
+    my_tree.insert(parent='',index='end',iid=1,text='02',values=('2nd Period','8.10','No'),tags=("custom_font"))
+    my_tree.insert(parent='',index='end',iid=2,text='03',values=('3rd Period','8.50','No'),tags=("custom_font"))
+    my_tree.insert(parent='',index='end',iid=3,text='04',values=('4th Period','9.30','No'),tags=("custom_font"))
+    my_tree.insert(parent='',index='end',iid=4,text='05',values=('5th Period','10.10','No'),tags=("custom_font"))
+    my_tree.insert(parent='',index='end',iid=5,text='06',values=('Interval','10.50','No'),tags=("custom_font"))
+    my_tree.insert(parent='',index='end',iid=6,text='07',values=('6th Period','11.30','No'),tags=("custom_font"))
+    my_tree.insert(parent='',index='end',iid=7,text='08',values=('7th Period','12.10','No'),tags=("custom_font"))
+    my_tree.insert(parent='',index='end',iid=8,text='09',values=('8th Period','12.50','No'),tags=("custom_font"))
     
     #pack to the screen
     my_tree.place(x=550,y=100)
