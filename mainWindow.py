@@ -6,8 +6,11 @@ class mainWindow:
     #functions
     def addbutton():
         top = Toplevel()
-        top.title('My second window')
-        top.geometry("500x400")
+        top.title('Add or Update Tasks - School Alarm System 1.0')
+        top.geometry("1000x700")
+        top.configure(background="#353b48")
+        title = tk.Label(top,text="Add or Update Tasks",fg="White",bg="#353b48",font="Times 30 bold").pack()
+        select_month = tk.Label(top,text="Select Day",fg="White",bg="#353b48",font="Times 15 bold").place(x=40,y=100)
         
 
     #create window
@@ -21,7 +24,7 @@ class mainWindow:
     root.geometry(f"{screen_width}x{screen_height}")
         
     #add labels
-    title = tk.Label(root,text="School Alarm System",fg="White",bg="#353b48",font="Times 35 bold").pack()
+    title = tk.Label(root,text="School Alarm System 1.0",fg="White",bg="#353b48",font="Times 35 bold").pack()
 
     #add buttons
     add_task = tk.Button(root,text="Add Task",font="Times 15 bold",bg="#273c75",fg="White",width=20,height=2,cursor="hand2",command=addbutton)
