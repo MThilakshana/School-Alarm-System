@@ -20,14 +20,14 @@ class mainWindow:
     title = tk.Label(root,text="School Alarm System",fg="White",bg="#353b48",font="Times 35 bold").pack()
 
     #add buttons
-    add_task = tk.Button(root,text="Add Task",font="Times 15 bold",bg="#273c75",fg="White",width=20,height=2,cursor="hand2")
+    add_task = tk.Button(root,text="Add Task",font="Times 15 bold",bg="#273c75",fg="White",width=20,height=2,cursor="hand2",command=addbutton)
     add_task.place(x=50,y=100)
 
     delete_task = tk.Button(root,text="Delete Task",fg="White",font="Times 15 bold",bg="#273c75",width=20,height=2,cursor="hand2")
     delete_task.place(x=50,y=200)
 
     exit = tk.Button(root,text="Exit",fg="White",font="Times 15 bold",bg="#273c75",width=20,height=2,cursor="hand2", command=root.destroy)
-    exit.place(x=50,y=500)
+    exit.place(x=50,y=682.5)
 
     #add table
     my_tree = ttk.Treeview(root,height=15)
@@ -39,7 +39,7 @@ class mainWindow:
     #set styles
     s = ttk.Style()
     s.theme_use('clam')
-    s.configure('Treeview.Heading',background="#273c75",font="Times 20")
+    s.configure('Treeview.Heading',background="Light Blue",font="Times 20")
     s.configure('Treeview',rowheight=40)
     #format our columns
     my_tree.column("#0",width=100,minwidth=25)
