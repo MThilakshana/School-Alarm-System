@@ -4,7 +4,11 @@ from tkinter import ttk
 class mainWindow:
     
     #functions
-
+    def addbutton():
+        top = Toplevel()
+        top.title('My second window')
+        top.geometry("500x400")
+        
 
     #create window
     root = tk.Tk()
