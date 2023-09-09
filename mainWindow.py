@@ -1,10 +1,13 @@
 import tkinter as tk
+import mysql.connector
+import calendar
 from tkinter import *
 from tkinter import ttk
-import mysql.connector
-from datetime import date
-import calendar
 from time import strftime
+from datetime import date
+from tktimepicker import AnalogPicker, AnalogThemes
+
+global task_id,month,description,time
 
 #conncet to the database
 mydb = mysql.connector.connect(
@@ -20,10 +23,13 @@ cursor.execute("use schoolalarmsystem")
 cursor.execute("Create table if not exists alarm(day varchar(50),id varchar(10),description varchar(100),time varchar(25))")
 
 #functions
+def saveData():
+    cursor.execute("INSERT INTO alarm VALUES()")
+    
 def addbutton():
     top = Toplevel()
     top.title('Add New Task - School Alarm System 1.0')
-    top.geometry("1000x700")
+    top.geometry("950x700")
     top.configure(background="#353b48")
     title = tk.Label(top,text="Add New Task",fg="White",bg="#353b48",font="Times 30 bold").pack()
     select_month = tk.Label(top,text="Select Day",fg="White",bg="#353b48",font="Times 15 bold").place(x=40,y=100)
@@ -33,6 +39,22 @@ def addbutton():
     id_entry = tk.Entry(top,font="Times 15 bold",width=22).place(x=200,y=150)
     description = tk.Label(top,text="Description",fg="White",bg="#353b48",font="Times 15 bold").place(x=40,y=200)
     description_entry = tk.Entry(top,font="Times 15 bold",width=70).place(x=200,y=200)
+    time_label = tk.Label(top,text="Time",fg="White",bg="#353b48",font="Times 15 bold").place(x=40,y=250)
+    
+    #set the clock
+    time_picker = AnalogPicker(top)
+    time_picker.place(x=200,y=250)
+    theme = AnalogThemes(time_picker)
+    theme.setNavyBlue()
+    
+    #get value
+    
+    
+    exit = tk.Button(top, text="Exit",font="Times 15 bold",bg="#273c75",fg="White",width=10,height=1,cursor="hand2",command=top.destroy).place(x=800,y=650)
+    save = tk.Button(top, text="Save",font="Times 15 bold",bg="#273c75",fg="White",width=10,height=1,cursor="hand2",command=saveData).place(x=650,y=650)
+    
+    top.mainloop()
+    
     
 def time_clock():
     string = strftime('%H:%M:%S %p')
