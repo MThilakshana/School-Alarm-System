@@ -4,8 +4,9 @@ import calendar
 from tkinter import *
 from tkinter import ttk
 from time import strftime
-from datetime import date,time
+from datetime import date,time,datetime
 from tktimepicker import AnalogPicker, AnalogThemes
+from tkinter import messagebox
 
 #conncet to the database
 mydb = mysql.connector.connect(
@@ -21,17 +22,16 @@ cursor.execute("use schoolalarmsystem")
 cursor.execute("Create table if not exists alarm(day varchar(50),id varchar(10),description varchar(100),time varchar(25))")
 
 #functions
-'''
-def saveData():
-    
+def saveData(myday,id,description,selectedTime,top):
+    timeVal = f"{selectedTime[0]}:{selectedTime[1]} {selectedTime[2]}"
+    #save data in database
     sql = "INSERT INTO alarm VALUES(%s,%s,%s,%s)"
-    record = (myday,taskid,descriptionVal,"abc")
+    record = (myday,id,description,timeVal)
     cursor.execute(sql,record)
     mydb.commit()
-    print("Data saved")
-    
-    print(myday," - ",taskid," - ",descriptionVal," - ",format_time)
-'''   
+    #message box
+    message = messagebox.showinfo("Message","Data saved successfully!")
+    top.destroy()
 
 def addbutton():
     top = Toplevel()
@@ -58,18 +58,7 @@ def addbutton():
     theme.setNavyBlue()
     
     exit = tk.Button(top, text="Exit",font="Times 15 bold",bg="#273c75",fg="White",width=10,height=1,cursor="hand2",command=top.destroy).place(x=800,y=650)
-    save = tk.Button(top, text="Save",font="Times 15 bold",bg="#273c75",fg="White",width=10,height=1,cursor="hand2").place(x=650,y=650)
-    
-    #get value
-    global myday
-    myday = day_combobox.get()
-    global taskid
-    taskid = id_entry.get()
-    global descriptionVal
-    descriptionVal = description_entry.get()
-    mytime= time_picker.time()
-    global format_time
-    print(mytime)
+    save = tk.Button(top, text="Save",font="Times 15 bold",bg="#273c75",fg="White",width=10,height=1,cursor="hand2",command=lambda:saveData(day_combobox.get(),id_entry.get(),description_entry.get(),time_picker.time(),top)).place(x=650,y=650)
 
     top.mainloop()
     
