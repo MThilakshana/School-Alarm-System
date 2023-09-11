@@ -62,6 +62,14 @@ def addbutton():
 
     top.mainloop()
     
+def deletebutton():
+    top = Toplevel()
+    top.title('Delete Task - School Alarm System 1.0')
+    top.geometry('600x400')
+    top.configure(background="#353b48")
+    title = tk.Label(top,text="Delete Task",fg="White",bg="#353b48",font="Times 30 bold").pack()
+    top.mainloop()
+    
     
 def time_clock():
     string = strftime('%H:%M:%S %p')
@@ -101,7 +109,7 @@ dayplace.place(x=900,y=140)
 add_task = tk.Button(root,text="Add Task",font="Times 15 bold",bg="#273c75",fg="White",width=20,height=2,cursor="hand2",command=addbutton)
 add_task.place(x=50,y=100)
 
-delete_task = tk.Button(root,text="Delete Task",fg="White",font="Times 15 bold",bg="#273c75",width=20,height=2,cursor="hand2")
+delete_task = tk.Button(root,text="Delete Task",fg="White",font="Times 15 bold",bg="#273c75",width=20,height=2,cursor="hand2",command=deletebutton)
 delete_task.place(x=50,y=200)
 
 exit = tk.Button(root,text="Exit",fg="White",font="Times 15 bold",bg="#273c75",width=20,height=2,cursor="hand2", command=root.destroy)
@@ -128,6 +136,7 @@ my_tree.heading("#0",text="ID",anchor=CENTER)
 my_tree.heading("Description",text="Description",anchor=CENTER)
 my_tree.heading("Time",text="Time",anchor=CENTER)
 #add data
+'''
 my_tree.insert(parent='',index='end',iid=0,text='01',values=('1st Period','7.30'),tags=("custom_font"))
 my_tree.insert(parent='',index='end',iid=1,text='02',values=('2nd Period','8.10'),tags=("custom_font"))
 my_tree.insert(parent='',index='end',iid=2,text='03',values=('3rd Period','8.50'),tags=("custom_font"))
@@ -137,6 +146,7 @@ my_tree.insert(parent='',index='end',iid=5,text='06',values=('Interval','10.50')
 my_tree.insert(parent='',index='end',iid=6,text='07',values=('6th Period','11.30'),tags=("custom_font"))
 my_tree.insert(parent='',index='end',iid=7,text='08',values=('7th Period','12.10'),tags=("custom_font"))
 my_tree.insert(parent='',index='end',iid=8,text='09',values=('8th Period','12.50'),tags=("custom_font"))
+'''
     
 #pack to the screen
 my_tree.place(x=550,y=200)
