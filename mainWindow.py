@@ -22,6 +22,11 @@ cursor.execute("use schoolalarmsystem")
 cursor.execute("Create table if not exists alarm(day varchar(50),id varchar(10),description varchar(100),time varchar(25))")
 
 #functions
+def exitwindow(root):
+    result = messagebox.askyesno("Confirmation", "Do you want to exit?")
+    if result:
+        root.destroy()
+    
 def saveData(myday,id,description,selectedTime,top):
     timeVal = f"{selectedTime[0]}:{selectedTime[1]} {selectedTime[2]}"
     #save data in database
@@ -65,9 +70,17 @@ def addbutton():
 def deletebutton():
     top = Toplevel()
     top.title('Delete Task - School Alarm System 1.0')
-    top.geometry('600x400')
+    top.geometry('600x350')
     top.configure(background="#353b48")
     title = tk.Label(top,text="Delete Task",fg="White",bg="#353b48",font="Times 30 bold").pack()
+    task_id = tk.Label(top,text="ID",fg="White",bg="#353b48",font="Times 15 bold").place(x=40,y=100)
+    id_entry = tk.Entry(top,font="Times 15 bold",width=22)
+    id_entry.place(x=200,y=100)
+    description_label = tk.Label(top,text="Description",fg="White",bg="#353b48",font="Times 15 bold").place(x=40,y=150)
+    description = tk.Entry(top,font="Times 15 bold",width=35)
+    description.place(x=200,y=150)
+    deletebtn = tk.Button(top,text="Delete",font="Times 15 bold",bg="#273c75",fg="White",width=10,height=1,cursor="hand2").place(x=225,y=250)
+    cnacelbtn = tk.Button(top,text="Cancel",font="Times 15 bold",bg="#273c75",fg="White",width=10,height=1,cursor="hand2",command=top.destroy).place(x=225,y=300)
     top.mainloop()
     
     
@@ -112,7 +125,7 @@ add_task.place(x=50,y=100)
 delete_task = tk.Button(root,text="Delete Task",fg="White",font="Times 15 bold",bg="#273c75",width=20,height=2,cursor="hand2",command=deletebutton)
 delete_task.place(x=50,y=200)
 
-exit = tk.Button(root,text="Exit",fg="White",font="Times 15 bold",bg="#273c75",width=20,height=2,cursor="hand2", command=root.destroy)
+exit = tk.Button(root,text="Exit",fg="White",font="Times 15 bold",bg="#273c75",width=20,height=2,cursor="hand2", command=lambda:exitwindow(root))
 exit.place(x=50,y=700)
 
 #add table
@@ -147,7 +160,7 @@ my_tree.insert(parent='',index='end',iid=6,text='07',values=('6th Period','11.30
 my_tree.insert(parent='',index='end',iid=7,text='08',values=('7th Period','12.10'),tags=("custom_font"))
 my_tree.insert(parent='',index='end',iid=8,text='09',values=('8th Period','12.50'),tags=("custom_font"))
 '''
-    
+
 #pack to the screen
 my_tree.place(x=550,y=200)
 
