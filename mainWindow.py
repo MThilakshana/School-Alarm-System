@@ -83,6 +83,25 @@ def deletebutton():
     cnacelbtn = tk.Button(top,text="Cancel",font="Times 15 bold",bg="#273c75",fg="White",width=10,height=1,cursor="hand2",command=top.destroy).place(x=225,y=300)
     top.mainloop()
     
+def updatebutton():
+    top = Toplevel()
+    top.title('Update Task - School Alarm System 1.0')
+    top.geometry('600x350')
+    top.configure(background="#353b48")
+    title = tk.Label(top,text="Update Task",fg="White",bg="#353b48",font="Times 30 bold").pack()
+    task_id = tk.Label(top,text="ID",fg="White",bg="#353b48",font="Times 15 bold").place(x=40,y=100)
+    id_entry = tk.Entry(top,font="Times 15 bold",width=35)
+    id_entry.place(x=200,y=100)
+    description_label = tk.Label(top,text="Description",fg="White",bg="#353b48",font="Times 15 bold").place(x=40,y=150)
+    description = tk.Entry(top,font="Times 15 bold",width=35)
+    description.place(x=200,y=150)
+    time_label = tk.Label(top,text="Time",fg="White",bg="#353b48",font="Times 15 bold").place(x=40,y=200)
+    time = tk.Entry(top,font="Times 15 bold",width=35)
+    time.place(x=200,y=200)
+    updatebtn = tk.Button(top,text="Update",font="Times 15 bold",bg="#273c75",fg="White",width=10,height=1,cursor="hand2").place(x=425,y=275)
+    cancelbtn = tk.Button(top,text="Cancel", font="Times 15 bold",width=10,height=1,bg="#273c75",fg="White",command=top.destroy).place(x=40,y=275)
+    top.mainloop()
+    
     
 def time_clock():
     string = strftime('%H:%M:%S %p')
@@ -125,13 +144,16 @@ add_task.place(x=50,y=100)
 delete_task = tk.Button(root,text="Delete Task",fg="White",font="Times 15 bold",bg="#273c75",width=20,height=2,cursor="hand2",command=deletebutton)
 delete_task.place(x=50,y=200)
 
+update_task = tk.Button(root,text="Update Task",fg="White",font="Times 15 bold",bg="#273c75",width=20,height=2,cursor="hand2",command=updatebutton)
+update_task.place(x=50,y=300)
+
 exit = tk.Button(root,text="Exit",fg="White",font="Times 15 bold",bg="#273c75",width=20,height=2,cursor="hand2", command=lambda:exitwindow(root))
 exit.place(x=50,y=700)
 
 #add table
 my_tree = ttk.Treeview(root,height=13)
 #define table columns
-my_tree['columns']=("Description","Time")
+my_tree['columns']=("ID","Description","Time")
 #set fonts
 custom_font = ("Times",20)
 my_tree.tag_configure("custom_font",font=custom_font)
@@ -141,25 +163,24 @@ s.theme_use('clam')
 s.configure('Treeview.Heading',background="Light Blue",font="Times 20")
 s.configure('Treeview',rowheight=40)
 #format our columns
-my_tree.column("#0",width=150,minwidth=25)
-my_tree.column("Description",anchor=W,width=550)
-my_tree.column("Time",anchor=CENTER,width=200)
+my_tree.column("#0",width=0,stretch=NO)
+my_tree.column("ID",anchor=CENTER,width=250)
+my_tree.column("Description",anchor=W,width=400)
+my_tree.column("Time",anchor=CENTER,width=250)
 #create headdings
-my_tree.heading("#0",text="ID",anchor=CENTER)
+my_tree.heading("#0",anchor=CENTER)
+my_tree.heading("ID",text="ID",anchor=CENTER)
 my_tree.heading("Description",text="Description",anchor=CENTER)
 my_tree.heading("Time",text="Time",anchor=CENTER)
 #add data
-'''
-my_tree.insert(parent='',index='end',iid=0,text='01',values=('1st Period','7.30'),tags=("custom_font"))
-my_tree.insert(parent='',index='end',iid=1,text='02',values=('2nd Period','8.10'),tags=("custom_font"))
-my_tree.insert(parent='',index='end',iid=2,text='03',values=('3rd Period','8.50'),tags=("custom_font"))
-my_tree.insert(parent='',index='end',iid=3,text='04',values=('4th Period','9.30'),tags=("custom_font"))
-my_tree.insert(parent='',index='end',iid=4,text='05',values=('5th Period','10.10'),tags=("custom_font"))
-my_tree.insert(parent='',index='end',iid=5,text='06',values=('Interval','10.50'),tags=("custom_font"))
-my_tree.insert(parent='',index='end',iid=6,text='07',values=('6th Period','11.30'),tags=("custom_font"))
-my_tree.insert(parent='',index='end',iid=7,text='08',values=('7th Period','12.10'),tags=("custom_font"))
-my_tree.insert(parent='',index='end',iid=8,text='09',values=('8th Period','12.50'),tags=("custom_font"))
-'''
+condition ="day = %s"
+record = (day,)
+mysql = "select id,description,time from alarm where " + condition
+cursor.execute(mysql,record)
+count = 0
+for row in cursor:
+    my_tree.insert(parent='',index='end',iid=count,text='',values=row,tags=("custom_font"))
+    count = count + 1
 
 #pack to the screen
 my_tree.place(x=550,y=200)
