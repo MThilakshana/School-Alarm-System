@@ -181,7 +181,6 @@ count = 0
 for row in cursor:
     my_tree.insert(parent='',index='end',iid=count,text='',values=row,tags=("custom_font"))
     count = count + 1
-
 #pack to the screen
 my_tree.place(x=550,y=200)
 
