@@ -1,6 +1,7 @@
 import tkinter as tk
 import mysql.connector
 import calendar
+from playsound import playsound
 from tkinter import *
 from tkinter import ttk
 from time import strftime
@@ -22,6 +23,19 @@ cursor.execute("use schoolalarmsystem")
 cursor.execute("Create table if not exists alarm(day varchar(50),id varchar(10),description varchar(100),time varchar(25))")
 
 #functions
+
+def playalarm():
+    for item_id in my_tree.get_children():
+        item_data = my_tree.item(item_id)
+        values = item_data["values"]
+        print(values)
+    if(datetime.now().hour > 12 ):
+        timeVal = str((datetime.now().hour-12)) + ":" + str(datetime.now().minute) + " PM"
+    else:
+        timeVal = str(datetime.now().hour) + ":" + str(datetime.now().minute) + " AM"
+    
+    
+    
 def exitwindow(root):
     result = messagebox.askyesno("Confirmation", "Do you want to exit?")
     if result:
@@ -186,5 +200,7 @@ my_tree.place(x=550,y=200)
 
 #set time
 time_clock()
+    
+playalarm()
 
 root.mainloop()
