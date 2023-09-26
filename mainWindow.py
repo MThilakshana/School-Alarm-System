@@ -23,17 +23,19 @@ cursor.execute("use schoolalarmsystem")
 cursor.execute("Create table if not exists alarm(day varchar(50),id varchar(10),description varchar(100),time varchar(25))")
 
 #functions
-
-def playalarm():
+def playalarm():        
+    if(datetime.now().hour > 12 ):
+        timeVal = str((datetime.now().hour-12)) + ":" + str(datetime.now().minute) + str(datetime.now().second) + " PM"
+    else:
+        timeVal = str(datetime.now().hour) + ":" + str(datetime.now().minute) + str(datetime.now().second) + " AM"
+    
     for item_id in my_tree.get_children():
         item_data = my_tree.item(item_id)
         values = item_data["values"]
-        print(values)
-    if(datetime.now().hour > 12 ):
-        timeVal = str((datetime.now().hour-12)) + ":" + str(datetime.now().minute) + " PM"
-    else:
-        timeVal = str(datetime.now().hour) + ":" + str(datetime.now().minute) + " AM"
-    
+        if(values[2] == timeVal):
+            print("Playing...")
+            playsound("C:/Users/DELL/Desktop/Python/School Alarm System/sound.mp3")
+            break
     
     
 def exitwindow(root):
@@ -42,7 +44,7 @@ def exitwindow(root):
         root.destroy()
     
 def saveData(myday,id,description,selectedTime,top):
-    timeVal = f"{selectedTime[0]}:{selectedTime[1]} {selectedTime[2]}"
+    timeVal = f"{selectedTime[0]}:{selectedTime[1]}:00 {selectedTime[2]}"
     #save data in database
     sql = "INSERT INTO alarm VALUES(%s,%s,%s,%s)"
     record = (myday,id,description,timeVal)
@@ -114,13 +116,14 @@ def updatebutton():
     time.place(x=200,y=200)
     updatebtn = tk.Button(top,text="Update",font="Times 15 bold",bg="#273c75",fg="White",width=10,height=1,cursor="hand2").place(x=425,y=275)
     cancelbtn = tk.Button(top,text="Cancel", font="Times 15 bold",width=10,height=1,bg="#273c75",fg="White",command=top.destroy).place(x=40,y=275)
-    top.mainloop()
-    
-    
+    top.mainloop()  
+
 def time_clock():
     string = strftime('%H:%M:%S %p')
     clock.config(text=string)
     clock.after(100, time_clock)
+    playalarm()
+
 
 #get date and time
 today_date = date.today()
