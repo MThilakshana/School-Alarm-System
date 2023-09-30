@@ -25,18 +25,18 @@ cursor.execute("Create table if not exists alarm(day varchar(50),id varchar(10),
 #functions
 def playalarm():        
     if(datetime.now().hour > 12 ):
-        timeVal = str((datetime.now().hour-12)) + ":" + str(datetime.now().minute) + str(datetime.now().second) + " PM"
+        timeVal = str((datetime.now().hour-12)).lstrip('0') + ":" + str(datetime.now().minute) + ":" + str(datetime.now().second) + " PM"
     else:
-        timeVal = str(datetime.now().hour) + ":" + str(datetime.now().minute) + str(datetime.now().second) + " AM"
-    
+        timeVal = str(datetime.now().hour).lstrip('0') + ":" + str(datetime.now().minute) + ":" + str(datetime.now().second) + " AM"
+
     for item_id in my_tree.get_children():
         item_data = my_tree.item(item_id)
         values = item_data["values"]
+       # print(values[2])
         if(values[2] == timeVal):
             print("Playing...")
             playsound("C:/Users/DELL/Desktop/Python/School Alarm System/sound.mp3")
             break
-    
     
 def exitwindow(root):
     result = messagebox.askyesno("Confirmation", "Do you want to exit?")
@@ -44,7 +44,7 @@ def exitwindow(root):
         root.destroy()
     
 def saveData(myday,id,description,selectedTime,top):
-    timeVal = f"{selectedTime[0]}:{selectedTime[1]}:00 {selectedTime[2]}"
+    timeVal = f"{selectedTime[0]}:{selectedTime[1]}:0 {selectedTime[2]}"
     #save data in database
     sql = "INSERT INTO alarm VALUES(%s,%s,%s,%s)"
     record = (myday,id,description,timeVal)
@@ -119,8 +119,10 @@ def updatebutton():
     top.mainloop()  
 
 def time_clock():
-    string = strftime('%H:%M:%S %p')
-    clock.config(text=string)
+    #string1 = strftime('%I:').lstrip('0')
+    string2 = strftime('%I:%M:%S %p')
+    #string = string1 + string2
+    clock.config(text=string2)
     clock.after(100, time_clock)
     playalarm()
 
