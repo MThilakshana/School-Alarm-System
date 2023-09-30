@@ -41,6 +41,11 @@ def playalarm():
         
 def searchbox():
     
+    def on_double_click(event):
+        selectedIndex = listbox.nearest(event.y)
+        selectedValue = listbox.get(selectedIndex)
+        print(selectedValue)
+    
     def filterData(event):
         #get the search query from entry box
         searchQuery = entry.get().lower()
@@ -61,6 +66,7 @@ def searchbox():
     entry.bind('<KeyRelease>',filterData)
     listbox = tk.Listbox(top,height=18,width=45)
     listbox.pack()
+    listbox.bind("<Double-Button-1>",on_double_click)
     
     data = []
     
@@ -70,7 +76,7 @@ def searchbox():
     for row in rows:
         listbox.insert(tk.END,f"{row[0]} - {row[1]} - {row[2]}")
         data.append([{row[0]},{row[1]},row[2]])
-    
+        
     top.mainloop()
     
     
