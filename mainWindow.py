@@ -38,6 +38,42 @@ def playalarm():
             playsound("C:/Users/DELL/Desktop/Python/School Alarm System/sound.mp3")
             break
     
+        
+def searchbox():
+    
+    def filterData(event):
+        #get the search query from entry box
+        searchQuery = entry.get().lower()
+        #clear listbox
+        listbox.delete(0,tk.END)
+        #filter and display
+        for item in data:
+            itemText = ' - '.join(str(element) for element in item).lower()
+            if searchQuery in itemText:
+                listbox.insert(tk.END,' - '.join(str(element).replace("{","").replace("'","").replace("}","") for element in item))
+
+    top = Toplevel()
+    top.title('Search')
+    top.geometry("300x400")
+    top.configure(background="#353b48")
+    entry = tk.Entry(top,width=30,font="Times 12")
+    entry.pack(pady=10)
+    entry.bind('<KeyRelease>',filterData)
+    listbox = tk.Listbox(top,height=18,width=45)
+    listbox.pack()
+    
+    data = []
+    
+    mysql = "SELECT id,description,time FROM alarm"
+    cursor.execute(mysql)
+    rows = cursor.fetchall()
+    for row in rows:
+        listbox.insert(tk.END,f"{row[0]} - {row[1]} - {row[2]}")
+        data.append([{row[0]},{row[1]},row[2]])
+    
+    top.mainloop()
+    
+    
 def exitwindow(root):
     result = messagebox.askyesno("Confirmation", "Do you want to exit?")
     if result:
@@ -92,6 +128,7 @@ def deletebutton():
     task_id = tk.Label(top,text="ID",fg="White",bg="#353b48",font="Times 15 bold").place(x=40,y=100)
     id_entry = tk.Entry(top,font="Times 15 bold",width=22)
     id_entry.place(x=200,y=100)
+    searchbtn = tk.Button(top,text="Search",fg="White",bg="#273c75",font="Times 15 bold",width=8,height=1,command=searchbox).place(x=450,y=95)
     description_label = tk.Label(top,text="Description",fg="White",bg="#353b48",font="Times 15 bold").place(x=40,y=150)
     description = tk.Entry(top,font="Times 15 bold",width=35)
     description.place(x=200,y=150)
