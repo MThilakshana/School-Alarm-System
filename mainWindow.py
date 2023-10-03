@@ -32,19 +32,19 @@ def playalarm():
     for item_id in my_tree.get_children():
         item_data = my_tree.item(item_id)
         values = item_data["values"]
-       # print(values[2])
         if(values[2] == timeVal):
             print("Playing...")
             playsound("C:/Users/DELL/Desktop/Python/School Alarm System/sound.mp3")
             break
     
-        
+'''     
 def searchbox():
     
     def on_double_click(event):
         selectedIndex = listbox.nearest(event.y)
         selectedValue = listbox.get(selectedIndex)
-        print(selectedValue)
+        return selectedValue
+        
     
     def filterData(event):
         #get the search query from entry box
@@ -78,7 +78,7 @@ def searchbox():
         data.append([{row[0]},{row[1]},row[2]])
         
     top.mainloop()
-    
+    '''
     
 def exitwindow(root):
     result = messagebox.askyesno("Confirmation", "Do you want to exit?")
@@ -132,9 +132,17 @@ def deletebutton():
     top.configure(background="#353b48")
     title = tk.Label(top,text="Delete Task",fg="White",bg="#353b48",font="Times 30 bold").pack()
     task_id = tk.Label(top,text="ID",fg="White",bg="#353b48",font="Times 15 bold").place(x=40,y=100)
-    id_entry = tk.Entry(top,font="Times 15 bold",width=22)
-    id_entry.place(x=200,y=100)
-    searchbtn = tk.Button(top,text="Search",fg="White",bg="#273c75",font="Times 15 bold",width=8,height=1,command=searchbox).place(x=450,y=95)
+    #id_entry = tk.Entry(top,font="Times 15 bold",width=22)
+    data = []
+    
+    mysql = "SELECT id,description,time FROM alarm"
+    cursor.execute(mysql)
+    rows = cursor.fetchall()
+    for row in rows:
+        data.append([row[0],row[1],row[2]])
+        
+    day_combobox = ttk.Combobox(top,values=data,width=20,font="Times 15 bold")
+    day_combobox.place(x=200,y=100)
     description_label = tk.Label(top,text="Description",fg="White",bg="#353b48",font="Times 15 bold").place(x=40,y=150)
     description = tk.Entry(top,font="Times 15 bold",width=35)
     description.place(x=200,y=150)
