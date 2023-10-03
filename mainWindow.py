@@ -1,6 +1,7 @@
 import tkinter as tk
 import mysql.connector
 import calendar
+import os
 from playsound import playsound
 from tkinter import *
 from tkinter import ttk
@@ -8,6 +9,7 @@ from time import strftime
 from datetime import date,time,datetime
 from tktimepicker import AnalogPicker, AnalogThemes
 from tkinter import messagebox
+from plyer import notification
 
 #conncet to the database
 mydb = mysql.connector.connect(
@@ -23,6 +25,33 @@ cursor.execute("use schoolalarmsystem")
 cursor.execute("Create table if not exists alarm(day varchar(50),id varchar(10),description varchar(100),time varchar(25))")
 
 #functions
+def addDataToTree():
+    condition ="day = %s"
+    record = (day,)
+    mysql = "select id,description,time from alarm where " + condition
+    cursor.execute(mysql,record)
+    count = 0
+    for row in cursor:
+        my_tree.insert(parent='',index='end',iid=count,text='',values=row,tags=("custom_font"))
+        count = count + 1
+    
+def sendNotification():
+    notification.notify(
+        title = "School Alarm System - 1.0",
+        message = "It is time to go next task",
+        app_name="Task Manager",
+        timeout=10
+    )
+
+'''
+def restartSystem():
+    try:
+        path = "C:/Users/DELL/Desktop/Python/School Alarm System/mainWindow.py"
+        args = ['mainWindow.py']
+        os.execv(path, args)
+    except Exception as e:
+        print("Error during restart:", e)
+    '''
 def playalarm():        
     if(datetime.now().hour > 12 ):
         timeVal = str((datetime.now().hour-12)).lstrip('0') + ":" + str(datetime.now().minute) + ":" + str(datetime.now().second) + " PM"
@@ -33,7 +62,7 @@ def playalarm():
         item_data = my_tree.item(item_id)
         values = item_data["values"]
         if(values[2] == timeVal):
-            print("Playing...")
+            sendNotification()
             playsound("C:/Users/DELL/Desktop/Python/School Alarm System/sound.mp3")
             break
     
@@ -52,6 +81,8 @@ def saveData(myday,id,description,selectedTime,top):
     #message box
     message = messagebox.showinfo("Message","Data saved successfully!")
     top.destroy()
+    #restartSystem()
+    addDataToTree()
 
 def addbutton():
     top = Toplevel()
@@ -126,22 +157,32 @@ def deletebutton():
     cnacelbtn = tk.Button(top,text="Cancel",font="Times 15 bold",bg="#273c75",fg="White",width=10,height=1,cursor="hand2",command=top.destroy).place(x=225,y=300)
     top.mainloop()
     
+def updateData(id,description,time,top):
+    sql = "UPDATE alarm SET description = %s , time = %s WHERE id = %s"
+    record = (description,time,id)
+    cursor.execute(sql,record)
+    mydb.commit()
+    messagebox.showinfo("Message","Data Updated Successfully!")
+    top.destroy()
+    
 def updatebutton():
     
     def searchData():
         try:
             record = "id = " + id_entry.get()
-            sql = "SELECT description FROM alarm where id=%s"
+            sql = "SELECT description, time FROM alarm where id=%s"
             record = id_entry.get()
             cursor.execute(sql, (record,))
             result = cursor.fetchone()
             if result is not None:
-                result = str(result).replace("{","").replace("}","").replace("(","").replace(")","").replace("'","").replace(",","")
-                description.insert(0, result)
+                des = str(result[0]).replace("{","").replace("}","").replace("(","").replace(")","").replace("'","").replace(",","")
+                tim = str(result[1]).replace("{","").replace("}","").replace("(","").replace(")","").replace("'","").replace(",","")
+                description.insert(0, des)
+                time.insert(0,tim)
             else:
                 messagebox.showinfo("Warning!","Invalid ID, Try Again!")
                 top.destroy()
-                deletebutton()
+                updatebutton()
         
         except mysql.connector.Error as error:
             messagebox.showinfo("Warning!","Error Found - ",error)
@@ -161,7 +202,7 @@ def updatebutton():
     time = tk.Entry(top,font="Times 15 bold",width=35)
     time.place(x=200,y=200)
     searchbtn = tk.Button(top,text="Search",font="Times 15 bold",bg="#273c75",fg="White",width=8,height=1,cursor="hand2",command=searchData).place(x=450,y=95)
-    updatebtn = tk.Button(top,text="Update",font="Times 15 bold",bg="#273c75",fg="White",width=10,height=1,cursor="hand2").place(x=425,y=275)
+    updatebtn = tk.Button(top,text="Update",font="Times 15 bold",bg="#273c75",fg="White",width=10,height=1,cursor="hand2",command=lambda:updateData(id_entry.get(),description.get(),time.get(),top)).place(x=425,y=275)
     cancelbtn = tk.Button(top,text="Cancel", font="Times 15 bold",width=10,height=1,bg="#273c75",fg="White",command=top.destroy).place(x=40,y=275)
     top.mainloop()  
 
@@ -239,6 +280,8 @@ my_tree.heading("ID",text="ID",anchor=CENTER)
 my_tree.heading("Description",text="Description",anchor=CENTER)
 my_tree.heading("Time",text="Time",anchor=CENTER)
 #add data
+addDataToTree()
+'''
 condition ="day = %s"
 record = (day,)
 mysql = "select id,description,time from alarm where " + condition
@@ -247,6 +290,7 @@ count = 0
 for row in cursor:
     my_tree.insert(parent='',index='end',iid=count,text='',values=row,tags=("custom_font"))
     count = count + 1
+    '''
 #pack to the screen
 my_tree.place(x=550,y=200)
 
