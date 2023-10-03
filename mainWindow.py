@@ -24,26 +24,15 @@ cursor.execute("CREATE DATABASE if not exists schoolalarmsystem")
 cursor.execute("use schoolalarmsystem")
 cursor.execute("Create table if not exists alarm(day varchar(50),id varchar(10),description varchar(100),time varchar(25))")
 
-#functions
-def addDataToTree():
-    condition ="day = %s"
-    record = (day,)
-    mysql = "select id,description,time from alarm where " + condition
-    cursor.execute(mysql,record)
-    count = 0
-    for row in cursor:
-        my_tree.insert(parent='',index='end',iid=count,text='',values=row,tags=("custom_font"))
-        count = count + 1
-    
-def sendNotification():
+#functions 
+def sendNotification(result):
     notification.notify(
         title = "School Alarm System - 1.0",
-        message = "It is time to go next task",
+        message = str(result).replace("'","").replace("(","").replace(")","").replace(",",""),
         app_name="Task Manager",
         timeout=10
     )
 
-'''
 def restartSystem():
     try:
         path = "C:/Users/DELL/Desktop/Python/School Alarm System/mainWindow.py"
@@ -51,7 +40,7 @@ def restartSystem():
         os.execv(path, args)
     except Exception as e:
         print("Error during restart:", e)
-    '''
+
 def playalarm():        
     if(datetime.now().hour > 12 ):
         timeVal = str((datetime.now().hour-12)).lstrip('0') + ":" + str(datetime.now().minute) + ":" + str(datetime.now().second) + " PM"
@@ -62,7 +51,14 @@ def playalarm():
         item_data = my_tree.item(item_id)
         values = item_data["values"]
         if(values[2] == timeVal):
-            sendNotification()
+            
+            sql = "SELECT description FROM alarm WHERE time = %s"
+            record = values[2]
+            cursor.execute(sql,(record,))
+            result = cursor.fetchone()
+            mydb.commit()
+    
+            sendNotification(result)
             playsound("C:/Users/DELL/Desktop/Python/School Alarm System/sound.mp3")
             break
     
@@ -78,11 +74,10 @@ def saveData(myday,id,description,selectedTime,top):
     record = (myday,id,description,timeVal)
     cursor.execute(sql,record)
     mydb.commit()
-    #message box
+    #message box    
     message = messagebox.showinfo("Message","Data saved successfully!")
     top.destroy()
-    #restartSystem()
-    addDataToTree()
+    addDataToTable()
 
 def addbutton():
     top = Toplevel()
@@ -120,6 +115,7 @@ def deleteData(id_entry,top):
     mydb.commit()
     messagebox.showinfo("Message","Record Deleted Successfully!")
     top.destroy()
+    addDataToTable()
     
 def deletebutton():
     
@@ -164,6 +160,7 @@ def updateData(id,description,time,top):
     mydb.commit()
     messagebox.showinfo("Message","Data Updated Successfully!")
     top.destroy()
+    addDataToTable()
     
 def updatebutton():
     
@@ -213,6 +210,17 @@ def time_clock():
     clock.config(text=string2)
     clock.after(100, time_clock)
     playalarm()
+    
+def addDataToTable():
+    my_tree.delete(*my_tree.get_children())
+    condition ="day = %s"
+    record = (day,)
+    mysql = "select id,description,time from alarm where " + condition
+    cursor.execute(mysql,record)
+    count = 0
+    for row in cursor:
+        my_tree.insert(parent='',index='end',iid=count,text='',values=row,tags=("custom_font"))
+        count = count + 1
 
 
 #get date and time
@@ -280,17 +288,10 @@ my_tree.heading("ID",text="ID",anchor=CENTER)
 my_tree.heading("Description",text="Description",anchor=CENTER)
 my_tree.heading("Time",text="Time",anchor=CENTER)
 #add data
-addDataToTree()
-'''
-condition ="day = %s"
-record = (day,)
-mysql = "select id,description,time from alarm where " + condition
-cursor.execute(mysql,record)
-count = 0
-for row in cursor:
-    my_tree.insert(parent='',index='end',iid=count,text='',values=row,tags=("custom_font"))
-    count = count + 1
-    '''
+
+
+addDataToTable()
+
 #pack to the screen
 my_tree.place(x=550,y=200)
 
