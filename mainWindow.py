@@ -37,49 +37,6 @@ def playalarm():
             playsound("C:/Users/DELL/Desktop/Python/School Alarm System/sound.mp3")
             break
     
-'''     
-def searchbox():
-    
-    def on_double_click(event):
-        selectedIndex = listbox.nearest(event.y)
-        selectedValue = listbox.get(selectedIndex)
-        return selectedValue
-        
-    
-    def filterData(event):
-        #get the search query from entry box
-        searchQuery = entry.get().lower()
-        #clear listbox
-        listbox.delete(0,tk.END)
-        #filter and display
-        for item in data:
-            itemText = ' - '.join(str(element) for element in item).lower()
-            if searchQuery in itemText:
-                listbox.insert(tk.END,' - '.join(str(element).replace("{","").replace("'","").replace("}","") for element in item))
-
-    top = Toplevel()
-    top.title('Search')
-    top.geometry("300x400")
-    top.configure(background="#353b48")
-    entry = tk.Entry(top,width=30,font="Times 12")
-    entry.pack(pady=10)
-    entry.bind('<KeyRelease>',filterData)
-    listbox = tk.Listbox(top,height=18,width=45)
-    listbox.pack()
-    listbox.bind("<Double-Button-1>",on_double_click)
-    
-    data = []
-    
-    mysql = "SELECT id,description,time FROM alarm"
-    cursor.execute(mysql)
-    rows = cursor.fetchall()
-    for row in rows:
-        listbox.insert(tk.END,f"{row[0]} - {row[1]} - {row[2]}")
-        data.append([{row[0]},{row[1]},row[2]])
-        
-    top.mainloop()
-    '''
-    
 def exitwindow(root):
     result = messagebox.askyesno("Confirmation", "Do you want to exit?")
     if result:
@@ -125,39 +82,77 @@ def addbutton():
 
     top.mainloop()
     
+def deleteData(id_entry,top):
+    deletequery ="DELETE FROM alarm WHERE id = %s"
+    record = id_entry
+    cursor.execute(deletequery,(record,))
+    mydb.commit()
+    messagebox.showinfo("Message","Record Deleted Successfully!")
+    top.destroy()
+    
 def deletebutton():
+    
+    def searchData():
+        try:
+            record = "id = " + id_entry.get()
+            sql = "SELECT description FROM alarm where id=%s"
+            record = id_entry.get()
+            cursor.execute(sql, (record,))
+            result = cursor.fetchone()
+            if result is not None:
+                result = str(result).replace("{","").replace("}","").replace("(","").replace(")","").replace("'","").replace(",","")
+                description.insert(0, result)
+            else:
+                messagebox.showinfo("Warning!","Invalid ID, Try Again!")
+                top.destroy()
+                deletebutton()
+        
+        except mysql.connector.Error as error:
+            messagebox.showinfo("Warning!","Error Found - ",error)       
+        
     top = Toplevel()
     top.title('Delete Task - School Alarm System 1.0')
     top.geometry('600x350')
     top.configure(background="#353b48")
     title = tk.Label(top,text="Delete Task",fg="White",bg="#353b48",font="Times 30 bold").pack()
     task_id = tk.Label(top,text="ID",fg="White",bg="#353b48",font="Times 15 bold").place(x=40,y=100)
-    #id_entry = tk.Entry(top,font="Times 15 bold",width=22)
-    data = []
-    
-    mysql = "SELECT id,description,time FROM alarm"
-    cursor.execute(mysql)
-    rows = cursor.fetchall()
-    for row in rows:
-        data.append([row[0],row[1],row[2]])
-        
-    day_combobox = ttk.Combobox(top,values=data,width=20,font="Times 15 bold")
-    day_combobox.place(x=200,y=100)
+    id_entry = tk.Entry(top,font="Times 15 bold",width=22)
+    id_entry.place(x=200,y=100)
     description_label = tk.Label(top,text="Description",fg="White",bg="#353b48",font="Times 15 bold").place(x=40,y=150)
     description = tk.Entry(top,font="Times 15 bold",width=35)
     description.place(x=200,y=150)
-    deletebtn = tk.Button(top,text="Delete",font="Times 15 bold",bg="#273c75",fg="White",width=10,height=1,cursor="hand2").place(x=225,y=250)
+    searchbtn = tk.Button(top,text="Search",font="Times 15 bold",bg="#273c75",fg="White",width=8,height=1,cursor="hand2",command=searchData).place(x=450,y=95)
+    deletebtn = tk.Button(top,text="Delete",font="Times 15 bold",bg="#273c75",fg="White",width=10,height=1,cursor="hand2",command=lambda:deleteData(id_entry.get(),top)).place(x=225,y=250)
     cnacelbtn = tk.Button(top,text="Cancel",font="Times 15 bold",bg="#273c75",fg="White",width=10,height=1,cursor="hand2",command=top.destroy).place(x=225,y=300)
     top.mainloop()
     
 def updatebutton():
+    
+    def searchData():
+        try:
+            record = "id = " + id_entry.get()
+            sql = "SELECT description FROM alarm where id=%s"
+            record = id_entry.get()
+            cursor.execute(sql, (record,))
+            result = cursor.fetchone()
+            if result is not None:
+                result = str(result).replace("{","").replace("}","").replace("(","").replace(")","").replace("'","").replace(",","")
+                description.insert(0, result)
+            else:
+                messagebox.showinfo("Warning!","Invalid ID, Try Again!")
+                top.destroy()
+                deletebutton()
+        
+        except mysql.connector.Error as error:
+            messagebox.showinfo("Warning!","Error Found - ",error)
+    
     top = Toplevel()
     top.title('Update Task - School Alarm System 1.0')
     top.geometry('600x350')
     top.configure(background="#353b48")
     title = tk.Label(top,text="Update Task",fg="White",bg="#353b48",font="Times 30 bold").pack()
     task_id = tk.Label(top,text="ID",fg="White",bg="#353b48",font="Times 15 bold").place(x=40,y=100)
-    id_entry = tk.Entry(top,font="Times 15 bold",width=35)
+    id_entry = tk.Entry(top,font="Times 15 bold",width=22)
     id_entry.place(x=200,y=100)
     description_label = tk.Label(top,text="Description",fg="White",bg="#353b48",font="Times 15 bold").place(x=40,y=150)
     description = tk.Entry(top,font="Times 15 bold",width=35)
@@ -165,6 +160,7 @@ def updatebutton():
     time_label = tk.Label(top,text="Time",fg="White",bg="#353b48",font="Times 15 bold").place(x=40,y=200)
     time = tk.Entry(top,font="Times 15 bold",width=35)
     time.place(x=200,y=200)
+    searchbtn = tk.Button(top,text="Search",font="Times 15 bold",bg="#273c75",fg="White",width=8,height=1,cursor="hand2",command=searchData).place(x=450,y=95)
     updatebtn = tk.Button(top,text="Update",font="Times 15 bold",bg="#273c75",fg="White",width=10,height=1,cursor="hand2").place(x=425,y=275)
     cancelbtn = tk.Button(top,text="Cancel", font="Times 15 bold",width=10,height=1,bg="#273c75",fg="White",command=top.destroy).place(x=40,y=275)
     top.mainloop()  
